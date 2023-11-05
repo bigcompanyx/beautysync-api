@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\WorkingHoursDayRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: WorkingHoursDayRepository::class)]
+#[ApiResource()]
 class WorkingHoursDay
 {
     #[ORM\Id]
