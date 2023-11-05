@@ -52,11 +52,11 @@ hooks:
         set -x -e
 
         symfony-deploy
-        
+
     post_deploy: |
         set -e
         cd $PLATFORM_APP_DIR
-        php bin/console doctrine:fixtures:load --no-interaction
+        ./bin/console doctrine:fixtures:load --no-interaction
 
 crons:
     security-check:
