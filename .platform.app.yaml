@@ -52,7 +52,10 @@ hooks:
         set -x -e
 
         symfony-deploy
-        app/console doctrine:fixtures:load
+
+        cd $PLATFORM_APP_DIR
+
+        bim/console doctrine:fixtures:load --no-interaction
 
 crons:
     security-check:
