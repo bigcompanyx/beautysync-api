@@ -21,6 +21,8 @@ runtime:
 variables:
     php:
         opcache.preload: config/preload.php
+    env:
+        APP_ENV: dev
 build:
     flavor: none
 
@@ -56,7 +58,7 @@ hooks:
     post_deploy: |
         set -e
         cd $PLATFORM_APP_DIR
-        APP_ENV=dev ./bin/console doctrine:fixtures:load --no-interaction
+        ./bin/console doctrine:fixtures:load --no-interaction
 
 crons:
     security-check:
