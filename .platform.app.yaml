@@ -52,6 +52,7 @@ hooks:
         set -x -e
 
         symfony-deploy
+        app/console doctrine:fixtures:load
 
 crons:
     security-check:
