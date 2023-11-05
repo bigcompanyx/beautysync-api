@@ -56,7 +56,7 @@ hooks:
     post_deploy: |
         set -e
         cd $PLATFORM_APP_DIR
-        ./bin/console doctrine:fixtures:load --no-interaction
+        APP_ENV=dev ./bin/console doctrine:fixtures:load --no-interaction
 
 crons:
     security-check:
