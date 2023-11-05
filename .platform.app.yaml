@@ -51,12 +51,11 @@ hooks:
     deploy: |
         set -x -e
 
-        cd $PLATFORM_APP_DIR
-        composer install --dev
-        php bin/console doctrine:migrations:migrate
-        php bin/console doctrine:fixtures:load --no-interaction
-
         symfony-deploy
+
+        cd $PLATFORM_APP_DIR
+
+        php bin/console doctrine:fixtures:load --no-interaction
 
 crons:
     security-check:
