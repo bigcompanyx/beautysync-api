@@ -12,7 +12,6 @@ class UsersTest extends ApiTestCase
 {
     use ResetDatabase, Factories;
 
-
     public function testGetCollection() {
 
         UserFactory::createMany(10);
@@ -47,4 +46,38 @@ class UsersTest extends ApiTestCase
             "jobTitle" => $user->getJobTitle()
         ]);
     }
+
+    public function testCreateUsers() {
+        $faker = UserFactory::faker();
+
+        $userDAta = [
+            "email" => $faker->email(),
+            "roles" => ['ROLE_USER'],
+            "fullName" => $faker->firstName() .' '. $faker->lastName(),
+            "jobTitle" => $faker->word()
+        ];
+
+        static::createClient()->request('POST', '/api/users/', [
+            "email" => $userDAta["email"],
+            "roles" => ['ROLE_USER'],
+            "fullName" => $userDAta["fullName"],
+            "jobTitle" => $userDAta["jobTitle"]
+        ]);
+
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        $this->assertJsonContains([
+            '@context' => '/api/contexts/User',
+            '@type' => 'User',
+            "email" => $userDAta["email"],
+            "roles" =>['ROLE_USER'],
+            "userIdentifier" => $userDAta["email"],
+            "fullName" => $userDAta["fullName"],
+            "jobTitle" => $userDAta["jobTitle"]
+        ]);
+    }
+
+    public function testUpdateUsers() {}
+
+    public function testDeleteUsers() {}
 }
