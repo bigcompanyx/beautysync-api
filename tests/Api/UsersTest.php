@@ -59,7 +59,7 @@ class UsersTest extends ApiTestCase
         ], array_keys($response));
     }
 
-    public function testCreateUsers() {
+    public function testCreateUser() {
         $faker = UserFactory::faker();
 
         $response = static::createClient()->request(
@@ -94,7 +94,7 @@ class UsersTest extends ApiTestCase
         ], array_keys($response));
     }
 
-    public function testUpdateUsers() {
+    public function testUpdateUser() {
         $user = UserFactory::createOne();
         $faker = UserFactory::faker();
 
@@ -119,7 +119,7 @@ class UsersTest extends ApiTestCase
         $this->assertSame($email, $response['email']);
     }
 
-    public function testDeleteUsers() {
+    public function testDeleteUser() {
         $user = UserFactory::createOne();
 
         static::createClient()->request('DELETE', '/api/users/'. $user->getId());
