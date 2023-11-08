@@ -7,77 +7,124 @@ use App\Factory\UserFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-
 class UsersTest extends ApiTestCase
 {
     use ResetDatabase, Factories;
 
-    public function testGetCollection() {
+    public function testGetUsersCollection() {
 
         UserFactory::createMany(10);
-        $response = static::createClient()->request('GET', '/api/users');
+
+        $response = static::createClient()->request('GET', '/api/users', [
+            'headers' => [
+                'accept' => 'application/json'
+            ]
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertCount(10, $response->toArray()['hydra:member']);
+        $this->assertCount(10, $response);
+
+        $this->assertSame([
+            "id",
+            "email",
+            "roles",
+            'password',
+            'userIdentifier'
+        ], array_keys(array_shift($response)));
 
     }
 
     public function testGetUser() { 
         $user = UserFactory::createOne();
 
-        static::createClient()->request('GET', '/api/users/'. $user->getId());
+        $response = static::createClient()->request('GET', '/api/users/'. $user->getId(), [
+            'headers' => [
+                'accept' => 'application/json'
+            ]
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/User',
-            "@id" => "/api/users/".$user->getId(),
-            '@type' => 'User',
-            "id" => $user->getId(),
-            "email" => $user->getEmail(),
-            "roles" => $user->getRoles(),
-            "userIdentifier" => $user->getEmail(),
-            "fullName" => $user->getFullName(),
-            "jobTitle" => $user->getJobTitle()
-        ]);
+        $this->assertSame([
+            "id",
+            "email",
+            "roles",
+            'password',
+            'userIdentifier'
+        ], array_keys($response));
     }
 
     public function testCreateUsers() {
         $faker = UserFactory::faker();
 
-        $userDAta = [
-            "email" => $faker->email(),
-            "roles" => ['ROLE_USER'],
-            "fullName" => $faker->firstName() .' '. $faker->lastName(),
-            "jobTitle" => $faker->word()
-        ];
+        $response = static::createClient()->request(
+            'POST', 
+            '/api/users', 
+            [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'body' => json_encode([
+                    "email" => $faker->email(),
+                    "roles" => ['ROLE_USER'],
+                    "fullName" => $faker->firstName() .' '. $faker->lastName(),
+                    "jobTitle" => $faker->word(),
+                    'password' =>  $faker->password()
+                ])
+            ]
 
-        static::createClient()->request('POST', '/api/users/', [
-            "email" => $userDAta["email"],
-            "roles" => ['ROLE_USER'],
-            "fullName" => $userDAta["fullName"],
-            "jobTitle" => $userDAta["jobTitle"]
-        ]);
+        )->toArray();
 
-        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+        $this->assertResponseIsSuccessful();
 
-        $this->assertJsonContains([
-            '@context' => '/api/contexts/User',
-            '@type' => 'User',
-            "email" => $userDAta["email"],
-            "roles" =>['ROLE_USER'],
-            "userIdentifier" => $userDAta["email"],
-            "fullName" => $userDAta["fullName"],
-            "jobTitle" => $userDAta["jobTitle"]
-        ]);
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+        $this->assertSame([
+            'id',
+            'email',
+            'roles',
+            'password',
+            'userIdentifier'
+        ], array_keys($response));
     }
 
-    public function testUpdateUsers() {}
+    public function testUpdateUsers() {
+        $user = UserFactory::createOne();
+        $faker = UserFactory::faker();
 
-    public function testDeleteUsers() {}
+        $email = $faker->email();
+
+        $response = static::createClient()->request('PUT', '/api/users/'. $user->getId(), [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode([
+                "email" => $email,
+                "roles" => ['ROLE_USER'],
+                'password' => $faker->password()
+            ])
+        ])->toArray();
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+        $this->assertSame($email, $response['email']);
+    }
+
+    public function testDeleteUsers() {
+        $user = UserFactory::createOne();
+
+        static::createClient()->request('DELETE', '/api/users/'. $user->getId());
+
+        $this->assertResponseStatusCodeSame(204);
+
+    }
 }
