@@ -32,7 +32,7 @@ class BookingTest extends ApiTestCase
 
     public function testBookingGet() {
 
-        $booking = BookingFactory ::createOne();
+        $booking = BookingFactory::createOne();
 
         $response = static::createClient()->request('GET', '/api/bookings/'.$booking->getId(), [
             'headers' => [
