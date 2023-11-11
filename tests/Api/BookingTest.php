@@ -9,6 +9,15 @@ class BookingTest extends ApiTestCase
 {
     use ResetDatabase, Factories;
 
+    const BOOKING_DATA = [
+        'dateTimeStart',
+        'dateTimeEnd',
+        'duration',
+        'price',
+        'assgnee',
+        'client'
+    ];
+
     public function testBookingGetCollection() {
 
         $response = static::createClient()->request('GET', '/api/bookings');
@@ -25,14 +34,7 @@ class BookingTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'dateTimeStart',
-            'dateTimeEnd',
-            'duration',
-            'price',
-            'assgnee',
-            'client'
-        ], array_keys($response));
+        $this->assertSame(self::BOOKING_DATA, array_keys($response));
 
     }
     
