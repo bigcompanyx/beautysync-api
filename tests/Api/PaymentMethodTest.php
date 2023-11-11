@@ -11,6 +11,11 @@ class PaymentMethodTest extends ApiTestCase
 
     const API_ENDPOINT = '/api/payment_methods';
 
+    const PAYMENT_METHOD = [
+        'id',
+        'name'
+    ];
+
     public function testPaymentMethodGetCollection() {
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
@@ -27,10 +32,7 @@ class PaymentMethodTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'name'
-        ], array_keys($response));
+        $this->assertSame(self::PAYMENT_METHOD, array_keys($response));
     }
     
     public function testPaymentMethodDelete() {
