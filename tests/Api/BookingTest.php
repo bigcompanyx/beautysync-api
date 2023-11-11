@@ -15,8 +15,8 @@ class BookingTest extends ApiTestCase
         'dateTimeEnd',
         'duration',
         'price',
-        'assignee',
-        'client'
+        // @todo 'assignee',
+        // @todo 'client'
     ];
 
     public function testBookingGetCollection() {

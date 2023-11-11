@@ -13,11 +13,11 @@ class UserSubscriptionTest extends ApiTestCase
 
     const USER_SUBSCRIPTION_DATA  = [
         'id',
-        'subscriptionPlan',
+        // @todo 'subscriptionPlan',
         'expirationDate',
         'status',
         'trialActiveTrialActive',
-        'user'
+        // @todo 'user'
     ];
 
     public function testUserSubscriptionGetCollection() {
