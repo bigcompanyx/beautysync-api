@@ -51,11 +51,14 @@ class UsersTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
         $this->assertSame([
-            "id",
-            "email",
-            "roles",
+            'id',
+            'email',
+            'roles',
             'password',
-            'userIdentifier'
+            'userIdentifier',
+            'photo',
+            'fullName',
+            'jobTitle'
         ], array_keys($response));
     }
 
