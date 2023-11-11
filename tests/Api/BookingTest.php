@@ -81,8 +81,32 @@ class BookingTest extends ApiTestCase
     }
 
     public function testBookingCreate() {
-        static::createClient()->request('PUT', '/api/bookings/1', []);
+
+        $faker = BookingFactory::faker();
+
+        $response = static::createClient()->request(
+            'POST', 
+            '/api/bookings', 
+            [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'Content-Type' => 'application/json'
+                ],
+                'body' => json_encode([
+                    'dateTimeEnd' => \DateTimeImmutable::createFromMutable($faker->dateTime())->format('Y-m-d H:i:s'),
+                    'dateTimeStart' => \DateTimeImmutable::createFromMutable($faker->dateTime())->format('Y-m-d H:i:s'),
+                    'duration' => $faker->randomNumber(),
+                    'price' => $faker->randomNumber(),
+
+                ])
+            ]
+
+        )->toArray();
 
         $this->assertResponseIsSuccessful();
+
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+        $this->assertSame(self::BOOKING_DATA, array_keys($response));
     }
 }
