@@ -72,8 +72,22 @@ class ClientTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testCilientCreate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+    public function testClientCreate() {
+        $faker = ClientFactory::faker();
+
+        static::createClient()->request('POST', self::API_ENDPOINT, [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode([
+                'email' => $faker->email(),
+                'fullName' => $faker->firstName() .' ' . $faker->lastName(),
+                'phone' => $faker->phoneNumber(),
+            ])
+        ]);
+       
+
 
         $this->assertResponseIsSuccessful();
     }
