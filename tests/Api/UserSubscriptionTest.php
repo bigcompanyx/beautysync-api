@@ -37,6 +37,11 @@ class UserSubscriptionTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
         $this->assertSame(self::USER_SUBSCRIPTION_DATA, array_keys($response));
+
+        $this->assertSame(UserSubscriptionTest::USER_SUBSCRIPTION_DATA, array_keys(array_shift($response['subscriptionPlan'])));
+
+        $this->assertSame(UsersTest::USER_DATA, array_keys($response['user']));
+
     }
     
     public function testUserSubscriptionDelete() {
