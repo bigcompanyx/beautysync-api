@@ -11,6 +11,11 @@ class LanguageTest extends ApiTestCase
 
     const API_ENDPOINT = '/api/languages';
 
+    const LANGUAGE_DATA = [
+        'id',
+        'name'
+    ];
+
     public function testLanguageGetCollection() {
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
@@ -27,10 +32,7 @@ class LanguageTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'name'
-        ], array_keys($response));
+        $this->assertSame(self::LANGUAGE_DATA, array_keys($response));
 
     }
     
