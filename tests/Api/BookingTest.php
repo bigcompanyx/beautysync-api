@@ -15,7 +15,7 @@ class BookingTest extends ApiTestCase
         'dateTimeEnd',
         'duration',
         'price',
-        'assgnee',
+        'assignee',
         'client'
     ];
 
@@ -36,6 +36,10 @@ class BookingTest extends ApiTestCase
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
         $this->assertSame(self::BOOKING_DATA, array_keys($response));
+
+        $this->assertSame(UsersTest::USER_DATA, array_keys($response['assignee']));
+
+        $this->assertSame(ClientTest::CLIENT_DATA, array_keys($response['client']));
 
     }
     
