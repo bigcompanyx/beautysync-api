@@ -15,10 +15,10 @@ class UsersTest extends ApiTestCase
         'email',
         'roles',
         'password',
-        'userIdentifier',
         // @todo  'photo',
         'fullName',
-        'jobTitle'
+        'jobTitle',
+        'userIdentifier'
     ];
     public function testGetUsersCollection() {
 
