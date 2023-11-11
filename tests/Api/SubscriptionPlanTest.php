@@ -11,6 +11,18 @@ class SubscriptionPlanTest extends ApiTestCase
 
     const API_ENDPOINT = '/api/subscription_plans';
 
+    const SUBSCRIPTION_PLAN_DATA = [
+        'id',
+        'name',
+        'description',
+        'features',
+        'price',
+        'duration',
+        'durationUnit',
+        'trialDuration',
+        'trialDurationUnit'
+    ];
+
     public function testSubscriptionPlanGetCollection() {
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
@@ -27,17 +39,7 @@ class SubscriptionPlanTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'name',
-            'description',
-            'features',
-            'price',
-            'duration',
-            'durationUnit',
-            'trialDuration',
-            'trialDurationUnit'
-        ], array_keys($response));
+        $this->assertSame(self::SUBSCRIPTION_PLAN_DATA, array_keys($response));
     }
     
     public function testSubscriptionPlanDelete() {
