@@ -9,6 +9,14 @@ class ServiceTest extends ApiTestCase
 {
     use ResetDatabase, Factories;
 
+    const SERVICE_DATA = [
+        'id',
+        'name',
+        'price',
+        'description',
+        'duration'
+    ];
+    
     const API_ENDPOINT = '/api/services';
 
     public function testServiceGetCollection() {
@@ -27,13 +35,7 @@ class ServiceTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'name',
-            'price',
-            'description',
-            'duration'
-        ], array_keys($response));
+        $this->assertSame(self::SERVICE_DATA, array_keys($response));
 
     }
     
