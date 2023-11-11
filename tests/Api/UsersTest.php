@@ -28,7 +28,7 @@ class UsersTest extends ApiTestCase
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertCount(10, $response()['hydra:member']);
+        $this->assertCount(10, $response['hydra:member']);
 
     }
 
