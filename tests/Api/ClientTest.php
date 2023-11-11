@@ -21,9 +21,18 @@ class ClientTest extends ApiTestCase
     }
 
     public function testClientGet() {
-        static::createClient()->request('GET', self::API_ENDPOINT.'/1');
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
 
         $this->assertResponseIsSuccessful();
+
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+        $this->assertSame([
+            'id',
+            'fullName',
+            'email',
+            'phone'
+        ], array_keys($response));
     }
     
     public function testClientDelete() {
