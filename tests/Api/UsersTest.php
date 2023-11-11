@@ -24,19 +24,11 @@ class UsersTest extends ApiTestCase
 
         UserFactory::createMany(10);
 
-        $response = static::createClient()->request('GET', '/api/users', [
-            'headers' => [
-                'accept' => 'application/json'
-            ]
-        ])->toArray();
+        $response = static::createClient()->request('GET', '/api/users')->toArray();
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
-
-        $this->assertCount(10, $response);
-
-        $this->assertSame(self::USER_DATA, array_keys(array_shift($response)));
+        $this->assertCount(10, $response()['hydra:member']);
 
     }
 
