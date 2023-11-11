@@ -10,6 +10,7 @@ class BookingTest extends ApiTestCase
     use ResetDatabase, Factories;
 
     const BOOKING_DATA = [
+        'id',
         'dateTimeStart',
         'dateTimeEnd',
         'duration',
