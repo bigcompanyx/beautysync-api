@@ -21,9 +21,16 @@ class PaymentMethodTest extends ApiTestCase
     }
 
     public function testPaymentMethodGet() {
-        static::createClient()->request('GET', self::API_ENDPOINT.'/1');
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
 
         $this->assertResponseIsSuccessful();
+
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+        $this->assertSame([
+            'id',
+            'name'
+        ], array_keys($response));
     }
     
     public function testPaymentMethodDelete() {
