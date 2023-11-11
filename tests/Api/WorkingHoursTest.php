@@ -11,6 +11,26 @@ class WorkingHoursTest extends ApiTestCase
 
     const API_ENDPOINT = '/api/working_hours';
 
+    const WORKING_HOURS_DATA = [
+        'id',
+        'sunday',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday'
+    ];
+
+    const  WORKING_DAYS_DAY_DATA = [
+        'id',
+        'dayName',
+        'workStart',
+        'workEnd',
+        'open',
+        'thursday',
+        'friday'
+    ];
+
     public function testWorkingHoursGetCollection() {
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
@@ -28,25 +48,9 @@ class WorkingHoursTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'sunday',
-            'monday',
-            'tuesday',
-            'wednesday',
-            'thursday',
-            'friday'
-        ], array_keys($response));
+        $this->assertSame(self::WORKING_HOURS_DATA, array_keys($response));
 
-        $this->assertSame([
-            'id',
-            'dayName',
-            'workStart',
-            'workEnd',
-            'open',
-            'thursday',
-            'friday'
-        ], array_keys($response['sunday']));
+        $this->assertSame(self::WORKING_DAYS_DAY_DATA, array_keys($response['sunday']));
     }
     
     public function testWorkingHoursDelete() {
