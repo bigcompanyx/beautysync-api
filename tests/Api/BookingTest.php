@@ -53,7 +53,9 @@ class BookingTest extends ApiTestCase
     }
     
     public function testBookingDelete() {
-        static::createClient()->request('DELETE', '/api/bookings/1');
+        $booking = BookingFactory::createOne();
+
+        static::createClient()->request('DELETE', '/api/bookings/'.$booking->getId());
 
         $this->assertResponseIsSuccessful();
     }
