@@ -46,7 +46,9 @@ class ClientTest extends ApiTestCase
     }
     
     public function testClientDelete() {
-        static::createClient()->request('DELETE', self::API_ENDPOINT.'/1');
+        $client = ClientFactory::createOne();
+        
+        static::createClient()->request('DELETE', self::API_ENDPOINT.'/'.$client->getId());
 
         $this->assertResponseIsSuccessful();
     }
