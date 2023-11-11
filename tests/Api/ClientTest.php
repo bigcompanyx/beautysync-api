@@ -2,6 +2,7 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\ClientFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -19,6 +20,7 @@ class ClientTest extends ApiTestCase
     ];
 
     public function testClientGetCollection() {
+        ClientFactory::createMany(10);
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
 
