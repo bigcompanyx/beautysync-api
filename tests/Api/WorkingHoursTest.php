@@ -21,9 +21,32 @@ class WorkingHoursTest extends ApiTestCase
     }
 
     public function testWorkingHoursGet() {
-        static::createClient()->request('GET', self::API_ENDPOINT.'/1');
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
 
         $this->assertResponseIsSuccessful();
+
+
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+        $this->assertSame([
+            'id',
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday'
+        ], array_keys($response));
+
+        $this->assertSame([
+            'id',
+            'dayName',
+            'workStart',
+            'workEnd',
+            'open',
+            'thursday',
+            'friday'
+        ], array_keys($response['sunday']));
     }
     
     public function testWorkingHoursDelete() {
