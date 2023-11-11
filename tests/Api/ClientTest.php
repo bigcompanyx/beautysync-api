@@ -11,6 +11,13 @@ class ClientTest extends ApiTestCase
 
     const API_ENDPOINT = '/api/clients';
 
+    const CLIENT_DATA = [
+        'id',
+        'fullName',
+        'email',
+        'phone'
+    ];
+
     public function testClientGetCollection() {
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
@@ -27,12 +34,7 @@ class ClientTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'fullName',
-            'email',
-            'phone'
-        ], array_keys($response));
+        $this->assertSame(self::CLIENT_DATA, array_keys($response));
     }
     
     public function testClientDelete() {
