@@ -19,9 +19,21 @@ class BookingTest extends ApiTestCase
     }
 
     public function testBookingGet() {
-        static::createClient()->request('GET', '/api/bookings/1');
+        $response = static::createClient()->request('GET', '/api/bookings/1')->toArray();
 
         $this->assertResponseIsSuccessful();
+
+        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+
+        $this->assertSame([
+            'dateTimeStart',
+            'dateTimeEnd',
+            'duration',
+            'price',
+            'assgnee',
+            'client'
+        ], array_keys($response));
+
     }
     
     public function testBookingDelete() {
