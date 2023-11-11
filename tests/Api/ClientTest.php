@@ -30,7 +30,13 @@ class ClientTest extends ApiTestCase
     }
 
     public function testClientGet() {
-        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
+        $client = ClientFactory::createOne();
+
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/'.$client->getId(),[
+            'headers' => [
+                'accept' => 'application/json'
+            ]
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
 
