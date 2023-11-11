@@ -11,6 +11,20 @@ class CompanyTest extends ApiTestCase
 
     const API_ENDPOINT = '/api/companies';
 
+    const COMPANY_DATA = [
+        'id',
+        'name',
+        'description',
+        'location',
+        'slug',
+        'published',
+        'paymentMethods',
+        'workingHours',
+        'services',
+        'users',
+        'logo',
+        'gallery'
+    ];
     public function testCompanyGetCollection() {
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
@@ -27,20 +41,7 @@ class CompanyTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'Name',
-            'Description',
-            'Location',
-            'slug',
-            'Published',
-            'PaymentMethods',
-            'WorkingHours',
-            'Services',
-            'Users',
-            'Logo',
-            'Gallery'
-        ], array_keys($response));
+        $this->assertSame(self::COMPANY_DATA, array_keys($response));
 
     }
     
