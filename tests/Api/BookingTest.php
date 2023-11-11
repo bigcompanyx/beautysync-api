@@ -2,6 +2,7 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\BookingFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -20,7 +21,8 @@ class BookingTest extends ApiTestCase
     ];
 
     public function testBookingGetCollection() {
-
+        BookingFactory::createMany(10);
+        
         $response = static::createClient()->request('GET', '/api/bookings');
 
         $this->assertResponseIsSuccessful();
