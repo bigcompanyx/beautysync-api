@@ -10,7 +10,16 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 class UsersTest extends ApiTestCase
 {
     use ResetDatabase, Factories;
-
+    const USER_DATA = [
+        'id',
+        'email',
+        'roles',
+        'password',
+        'userIdentifier',
+        'photo',
+        'fullName',
+        'jobTitle'
+    ];
     public function testGetUsersCollection() {
 
         UserFactory::createMany(10);
@@ -27,13 +36,7 @@ class UsersTest extends ApiTestCase
 
         $this->assertCount(10, $response);
 
-        $this->assertSame([
-            "id",
-            "email",
-            "roles",
-            'password',
-            'userIdentifier'
-        ], array_keys(array_shift($response)));
+        $this->assertSame(self::USER_DATA, array_keys(array_shift($response)));
 
     }
 
@@ -50,16 +53,7 @@ class UsersTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'email',
-            'roles',
-            'password',
-            'userIdentifier',
-            'photo',
-            'fullName',
-            'jobTitle'
-        ], array_keys($response));
+        $this->assertSame(self::USER_DATA, array_keys($response));
     }
 
     public function testCreateUser() {
@@ -88,13 +82,7 @@ class UsersTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'email',
-            'roles',
-            'password',
-            'userIdentifier'
-        ], array_keys($response));
+        $this->assertSame(self::USER_DATA, array_keys($response));
     }
 
     public function testUpdateUser() {
