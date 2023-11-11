@@ -11,6 +11,12 @@ class CurrencyTest extends ApiTestCase
 
     const API_ENDPOINT = '/api/currencies';
 
+    const CURRENCY_DATA = [
+        'id',
+        'name',
+        'isoCode'
+    ];
+
     public function testCurrencyGetCollection() {
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
@@ -27,11 +33,7 @@ class CurrencyTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'name',
-            'isoCode'
-        ], array_keys($response));
+        $this->assertSame(self::CURRENCY_DATA, array_keys($response));
 
     }
     
