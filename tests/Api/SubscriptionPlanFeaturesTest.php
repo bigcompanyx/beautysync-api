@@ -9,6 +9,11 @@ class SubscriptionPlanFeaturesTest extends ApiTestCase
 {
     use ResetDatabase, Factories;
 
+    const FEATURE_DATA = [
+        'id',
+        'name'
+    ];
+
     const API_ENDPOINT = '/api/subscription_plans_features';
 
     public function testSubscriptionPlanFeaturesGetCollection() {
@@ -27,10 +32,7 @@ class SubscriptionPlanFeaturesTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
-        $this->assertSame([
-            'id',
-            'name'
-        ], array_keys($response));
+        $this->assertSame(self::FEATURE_DATA, array_keys($response));
 
     }
     
