@@ -7,7 +7,9 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\CreateBookPublication;
 use App\Controller\UserRegistrationController;
 
-#[ApiResource(operations: [
+#[ApiResource(
+    shortName:"User Registration",
+    operations: [
     new Post(
         name: 'registration', 
         uriTemplate: '/register', 

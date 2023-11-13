@@ -11,7 +11,7 @@ use App\Controller\ResetPasswordResetController;
 use App\Controller\UserRegistrationController;
 
 #[ApiResource(
-    description: "Reset Password reset",
+    shortName: "Reset Password",
     operations: [
     new Post(
         name: 'app_reset_password', 
