@@ -47,7 +47,8 @@
         "symfonycasts/reset-password-bundle": "^1.18",
         "symfonycorp/platformsh-meta": "^1.0",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "zenstruck/foundry": "^1.36"
     },
     "config": {
         "allow-plugins": {
@@ -99,7 +100,7 @@
         }
     },
     "require-dev": {
-        "dama/doctrine-test-bundle": "^7.2",
+        "dama/doctrine-test-bundle": "^7.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "justinrainbow/json-schema": "^5.2",
         "phpunit/phpunit": "^9.5",
@@ -110,7 +111,6 @@
         "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "^6.3",
         "symfony/stopwatch": "6.3.*",
-        "symfony/web-profiler-bundle": "6.3.*",
-        "zenstruck/foundry": "^1.36"
+        "symfony/web-profiler-bundle": "6.3.*"
     }
 }
