@@ -19,7 +19,7 @@ class UserRegistrationController extends AbstractController
     {
 
     }
-    #[Route('/api/v1/registration', name: 'app_registration')]
+    #[Route('/api/registration', name: 'app_registration')]
     public function index(#[MapRequestPayload] UserDTO $userCreateRequest): Response
     {
         $user = (new User())
