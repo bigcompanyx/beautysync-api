@@ -7,10 +7,12 @@ use App\Model\User as UserDTO;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[AsController]
 class UserRegistrationController extends AbstractController
 {
     public function __construct( 
@@ -19,8 +21,8 @@ class UserRegistrationController extends AbstractController
     {
 
     }
-    #[Route('/api/registration', name: 'app_registration')]
-    public function index(#[MapRequestPayload] UserDTO $userCreateRequest): Response
+
+    public function __invoke(#[MapRequestPayload] UserDTO $userCreateRequest): Response
     {
         $user = (new User())
             ->setEmail($userCreateRequest->getEmail())
