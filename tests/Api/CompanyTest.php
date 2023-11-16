@@ -76,7 +76,8 @@ class CompanyTest extends ApiTestCase
 
     public function testCompanyUpdate() {
         $company = CompanyFactory::createOne();
-        $faker = Factory::faker();
+        $newCompany = CompanyFactory::new()->withoutPersisting()->create();
+
 
         static::createClient()->request('PATCH', self::API_ENDPOINT.'/'.$company->getId(), [
             'headers' => [
@@ -84,10 +85,10 @@ class CompanyTest extends ApiTestCase
                 'Content-Type' => 'application/merge-patch+json'
             ],
             'body' => json_encode([
-                'name' => $faker->company(),
-                'description' => $faker->text(),
-                'location' => implode($faker->localCoordinates()),
-                'published' => $faker->boolean(),
+                'name' => $newCompany->getName(),
+                'description' => $newCompany->getDescription(),
+                'location' => $newCompany->getLocation(),
+                'published' => $newCompany->isPublished(),
             ])
         ]);
 
@@ -95,19 +96,19 @@ class CompanyTest extends ApiTestCase
     }
 
     public function testCompanyCreate() {
-        $faker = Factory::faker();
-        
+        $company = CompanyFactory::new()->withoutPersisting()->create();
+
         static::createClient()->request('POST', self::API_ENDPOINT, [
             'headers' => [
                 'accept' => 'application/json',
                 'Content-Type' => 'application/json'
             ],
             'body' => json_encode([
-                'name' => $faker->company(),
-                'slug' => $faker->slug(),
-                'description' => $faker->text(),
-                'location' => implode($faker->localCoordinates()),
-                'published' => $faker->boolean(),
+                'name' => $company->getName(),
+                'slug' => $company->getSlug(),
+                'description' => $company->getDescription(),
+                'location' => $company->getLocation(),
+                'published' => $company->isPublished(),
             ])
         ]);
 
