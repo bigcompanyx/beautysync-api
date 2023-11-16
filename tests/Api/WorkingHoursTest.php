@@ -26,9 +26,7 @@ class WorkingHoursTest extends ApiTestCase
         'dayName',
         'workStart',
         'workEnd',
-        'open',
-        'thursday',
-        'friday'
+        'open'
     ];
 
     public function testWorkingHoursGetCollection() {
