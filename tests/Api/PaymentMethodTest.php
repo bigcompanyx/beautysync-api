@@ -2,6 +2,7 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\PaymentMethodFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -17,6 +18,7 @@ class PaymentMethodTest extends ApiTestCase
     ];
 
     public function testPaymentMethodGetCollection() {
+        PaymentMethodFactory::createMany(10);
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
 
@@ -26,7 +28,13 @@ class PaymentMethodTest extends ApiTestCase
     }
 
     public function testPaymentMethodGet() {
-        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
+        $paymentMethod = PaymentMethodFactory::createOne();
+
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/'. $paymentMethod->getId(), [
+            'headers' => [
+                'accept' => 'application/json'
+            ]
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
 
@@ -36,19 +44,43 @@ class PaymentMethodTest extends ApiTestCase
     }
     
     public function testPaymentMethodDelete() {
-        static::createClient()->request('DELETE', self::API_ENDPOINT.'/1');
+        $paymentMethod = PaymentMethodFactory::createOne();
+
+        static::createClient()->request('DELETE', self::API_ENDPOINT.'/'.$paymentMethod->getId());
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testPaymentMethodUpdate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $paymentMethod = PaymentMethodFactory::createOne();
+        $paymentMethod2 = PaymentMethodFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('PATCH', self::API_ENDPOINT.'/'. $paymentMethod->getId(), [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json'
+            ],
+            'body' => json_encode([
+                'name' => $paymentMethod2->getName()
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testPaymentMethodCreate() {
-        static::createClient()->request('POST', self::API_ENDPOINT.'/1', []);
+
+        $language = PaymentMethodFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('POST', self::API_ENDPOINT, [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode([
+                'name' => $language->getName()
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
