@@ -2,6 +2,7 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\CurrencyFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -18,6 +19,7 @@ class CurrencyTest extends ApiTestCase
     ];
 
     public function testCurrencyGetCollection() {
+        CurrencyFactory::createMany(10);
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
 
@@ -27,7 +29,13 @@ class CurrencyTest extends ApiTestCase
     }
 
     public function testCurrencyGet() {
-        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
+        $currency = CurrencyFactory::createOne();
+
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/'.$currency->getId(), [
+            'headers' => [
+                'accept' => 'application/json'
+            ]
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
 
@@ -38,19 +46,43 @@ class CurrencyTest extends ApiTestCase
     }
     
     public function testCurrencyDelete() {
-        static::createClient()->request('DELETE', self::API_ENDPOINT.'/1');
+        $currency = CurrencyFactory::createOne();
+
+        static::createClient()->request('DELETE', self::API_ENDPOINT.'/'. $currency->getId());
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testCurrencyUpdate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $currency = CurrencyFactory::createOne();
+        $currency2 = CurrencyFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('PATCH', self::API_ENDPOINT.'/'.$currency->getId(), [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json'
+            ],
+            'body' => json_encode([
+                'name' => $currency2->getName()
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testCurrencyCreate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $currency = CurrencyFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('POST', self::API_ENDPOINT, [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode([
+                'name' => $currency->getName(),
+                'isoCode' => $currency->getIsoCode()
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
