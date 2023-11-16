@@ -2,6 +2,7 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\LanguageFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -17,7 +18,8 @@ class LanguageTest extends ApiTestCase
     ];
 
     public function testLanguageGetCollection() {
-
+        LanguageFactory::createMany(10);
+        
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
 
         $this->assertResponseIsSuccessful();
@@ -26,7 +28,13 @@ class LanguageTest extends ApiTestCase
     }
 
     public function testLanguageGet() {
-        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
+        $language = LanguageFactory::createOne();
+
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/'. $language->getId(), [
+            'headers' => [
+                'accept' => 'application/json'
+            ]
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
 
@@ -37,19 +45,41 @@ class LanguageTest extends ApiTestCase
     }
     
     public function testLanguageDelete() {
-        static::createClient()->request('DELETE', self::API_ENDPOINT.'/1');
+        $language = LanguageFactory::createOne();
+
+        static::createClient()->request('DELETE', self::API_ENDPOINT.'/'.$language->getId());
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testLanguageUpdate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $language = LanguageFactory::createOne();
+        $language2 = LanguageFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('PATCH', self::API_ENDPOINT.'/'. $language->getId(), [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json'
+            ],
+            'body' => json_encode([
+                'name' => $language2->getName()
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testLanguageCreate() {
-        static::createClient()->request('POST', self::API_ENDPOINT.'/1', []);
+        $language = LanguageFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('POST', self::API_ENDPOINT, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
+            'body' =>  json_encode([
+                'name' => $language->getName()
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
