@@ -16,7 +16,7 @@ class UserSubscriptionTest extends ApiTestCase
         // @todo 'subscriptionPlan',
         'expirationDate',
         'status',
-        'trialActiveTrialActive',
+        'trialActive',
         // @todo 'user'
     ];
 
