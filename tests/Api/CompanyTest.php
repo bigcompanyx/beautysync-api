@@ -95,7 +95,21 @@ class CompanyTest extends ApiTestCase
     }
 
     public function testCompanyCreate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $faker = Factory::faker();
+        
+        static::createClient()->request('POST', self::API_ENDPOINT, [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode([
+                'name' => $faker->company(),
+                'slug' => $faker->slug(),
+                'description' => $faker->text(),
+                'location' => implode($faker->localCoordinates()),
+                'published' => $faker->boolean(),
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
