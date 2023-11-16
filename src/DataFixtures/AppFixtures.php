@@ -27,7 +27,7 @@ class AppFixtures extends Fixture
         DefaultLanguageStory::load();
         DefaultPaymentMethodStory::load();
         DefaultServiceStory::load();   
-        DefaultSubscriptionPlanStory::load(); 
-        DefaultUserSubscriptionStory::load();
+        // DefaultSubscriptionPlanStory::load(); 
+        // DefaultUserSubscriptionStory::load();
     }
 }
