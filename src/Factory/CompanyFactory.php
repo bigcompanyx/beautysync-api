@@ -8,6 +8,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
+
 /**
  * @extends ModelFactory<Company>
  *
@@ -52,9 +53,9 @@ final class CompanyFactory extends ModelFactory
 
         return [
             'name' => $company,
-            'slug' => $this->slugger->slug($company),
+            'slug' => $this->slugger->slug($company)->lower(),
             'description' => self::faker()->text(),
-            'location' => implode(self::faker()->localCoordinates()),
+            'location' => self::faker()->address(),
             'published' => self::faker()->boolean(),
 
         ];
