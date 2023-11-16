@@ -54,7 +54,7 @@ final class CompanyFactory extends ModelFactory
             'name' => $company,
             'slug' => $this->slugger->slug($company),
             'description' => self::faker()->text(),
-            'location' => self::faker()->localCoordinates,
+            'location' => implode(self::faker()->localCoordinates()),
             'published' => self::faker()->boolean(),
 
         ];

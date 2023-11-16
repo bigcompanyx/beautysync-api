@@ -2,6 +2,7 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\CompanyFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -26,6 +27,8 @@ class CompanyTest extends ApiTestCase
         // @todo 'gallery'
     ];
     public function testCompanyGetCollection() {
+
+        CompanyFactory::createMany(10);
 
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
 
