@@ -7,6 +7,7 @@ use App\Story\DefaultClientStory;
 use App\Story\DefaultCompanyStory;
 use App\Story\DefaultCurrencyStory;
 use App\Story\DefaultLanguageStory;
+use App\Story\DefaultPaymentMethodStory;
 use App\Story\DefaultUsersStory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -21,5 +22,6 @@ class AppFixtures extends Fixture
         DefaultCompanyStory::load();
         DefaultCurrencyStory::load();
         DefaultLanguageStory::load();
+        DefaultPaymentMethodStory::load();
     }
 }
