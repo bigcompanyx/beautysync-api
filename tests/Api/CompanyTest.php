@@ -64,7 +64,9 @@ class CompanyTest extends ApiTestCase
     }
     
     public function testCompanyDelete() {
-        static::createClient()->request('DELETE', self::API_ENDPOINT.'/1');
+        $company = CompanyFactory::createOne();
+
+        static::createClient()->request('DELETE', self::API_ENDPOINT.'/'.$company->getId());
 
         $this->assertResponseIsSuccessful();
     }
