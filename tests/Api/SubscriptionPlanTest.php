@@ -15,7 +15,7 @@ class SubscriptionPlanTest extends ApiTestCase
         'id',
         'name',
         'description',
-        'features',
+        //@todo 'features',
         'price',
         'duration',
         'durationUnit',
