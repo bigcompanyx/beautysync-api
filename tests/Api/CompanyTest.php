@@ -3,6 +3,7 @@
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Factory\CompanyFactory;
+use Zenstruck\Foundry\Factory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -26,6 +27,8 @@ class CompanyTest extends ApiTestCase
         // @todo 'logo',
         // @todo 'gallery'
     ];
+
+
     public function testCompanyGetCollection() {
 
         CompanyFactory::createMany(10);
@@ -72,7 +75,21 @@ class CompanyTest extends ApiTestCase
     }
 
     public function testCompanyUpdate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $company = CompanyFactory::createOne();
+        $faker = Factory::faker();
+
+        static::createClient()->request('PATCH', self::API_ENDPOINT.'/'.$company->getId(), [
+            'headers' => [
+                'accept' => 'application/json',
+                'Content-Type' => 'application/merge-patch+json'
+            ],
+            'body' => json_encode([
+                'name' => $faker->company(),
+                'description' => $faker->text(),
+                'location' => implode($faker->localCoordinates()),
+                'published' => $faker->boolean(),
+            ])
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
