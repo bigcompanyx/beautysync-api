@@ -49,11 +49,11 @@ final class SubscriptionPlanFactory extends ModelFactory
         return [
             'description' => self::faker()->text(),
             'duration' => self::faker()->randomNumber(2),
-            'durationUnit' => self::faker()->randomElements(['day', 'month', 'year']),
-            'name' => self::faker()->randomElements(['Start', 'Corporate', 'Premium']),
+            'durationUnit' => self::faker()->randomElement(['day', 'month', 'year']),
+            'name' => self::faker()->randomElement(['Start', 'Corporate', 'Premium']),
             'price' => self::faker()->randomNumber(2),
-            'trialDuration' => self::faker()->randomElements(['day', 'month', 'year']),
-            'trialDurationUnit' => self::faker()->randomElements(['day', 'month', 'year']),
+            'trialDuration' => self::faker()->randomNumber(2),
+            'trialDurationUnit' => self::faker()->randomElement(['day', 'month', 'year']),
         ];
     }
 
