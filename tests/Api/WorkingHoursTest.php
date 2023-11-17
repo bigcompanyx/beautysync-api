@@ -2,10 +2,12 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\WorkingHoursFactory;
+use App\Tests\ImprovedApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class WorkingHoursTest extends ApiTestCase
+class WorkingHoursTest extends ImprovedApiTestCase
 {
     use ResetDatabase, Factories;
 
@@ -30,7 +32,8 @@ class WorkingHoursTest extends ApiTestCase
     ];
 
     public function testWorkingHoursGetCollection() {
-
+        WorkingHoursFactory::createMany(10);
+        
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
 
         $this->assertResponseIsSuccessful();
@@ -39,10 +42,15 @@ class WorkingHoursTest extends ApiTestCase
     }
 
     public function testWorkingHoursGet() {
-        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
+        $workinghours = WorkingHoursFactory::createOne();
+
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/'.$workinghours->getId(),[
+           'headers' =>  [
+                'accept' => 'application/json'
+            ] 
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
-
 
         $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
 
@@ -52,19 +60,36 @@ class WorkingHoursTest extends ApiTestCase
     }
     
     public function testWorkingHoursDelete() {
-        static::createClient()->request('DELETE', self::API_ENDPOINT.'/1');
+        $workinghours = WorkingHoursFactory::createOne();
+
+        static::createClient()->request('DELETE', self::API_ENDPOINT.'/'.$workinghours->getId());
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testWorkingHoursUpdate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $workinghours = WorkingHoursFactory::createOne();
+        $workinghours2 = WorkingHoursFactory::new()->withoutPersisting()->createOne()->object();
+
+        static::createClient()->request('PATCH', self::API_ENDPOINT.'/'.$workinghours->getId(), [
+            'headers' => [
+                'Content-Type' => 'application/merge-patch+json'
+            ],
+            'body' => json_encode($this->getRequestBody(self::WORKING_HOURS_DATA, $workinghours2))
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testWorkingHoursCreate() {
-        static::createClient()->request('POST', self::API_ENDPOINT.'/1', []);
+        $workinghours = WorkingHoursFactory::new()->withoutPersisting()->createOne()->object();
+
+        static::createClient()->request('POST', self::API_ENDPOINT, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode($this->getRequestBody(self::WORKING_HOURS_DATA, $workinghours))
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
