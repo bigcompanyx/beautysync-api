@@ -59,7 +59,7 @@ class SubscriptionPlanTest extends ImprovedApiTestCase
 
     public function testSubscriptionPlanUpdate() {
         $subscriptionPlan = SubscriptionPlanFactory::createOne();
-        $subscriptionPlan2 = SubscriptionPlanFactory::new()->withoutPersisting()->createOne();
+        $subscriptionPlan2 = SubscriptionPlanFactory::new()->withoutPersisting()->createOne()->object();
 
         static::createClient()->request('PATCH', self::API_ENDPOINT.'/'.$subscriptionPlan->getId(), [
             'headers' => [
@@ -72,7 +72,7 @@ class SubscriptionPlanTest extends ImprovedApiTestCase
     }
 
     public function testSubscriptionPlanCreate() {
-        $subscriptionPlan = SubscriptionPlanFactory::new()->withoutPersisting()->createOne();
+        $subscriptionPlan = SubscriptionPlanFactory::new()->withoutPersisting()->createOne()->object();
         
         static::createClient()->request('POST', self::API_ENDPOINT, [
             'headers' => [

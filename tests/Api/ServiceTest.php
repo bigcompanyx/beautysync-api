@@ -59,7 +59,7 @@ class ServiceTest extends ImprovedApiTestCase
 
     public function testServiceUpdate() {
         $service = ServiceFactory::createOne();
-        $service2 = ServiceFactory::new()->withoutPersisting()->createOne();
+        $service2 = ServiceFactory::new()->withoutPersisting()->createOne()->object();
 
         static::createClient()->request('PATCH', self::API_ENDPOINT.'/'.$service->getId(), [
             'headers' =>[
@@ -72,7 +72,7 @@ class ServiceTest extends ImprovedApiTestCase
     }
 
     public function testServiceCreate() {
-        $service = ServiceFactory::new()->withoutPersisting()->createOne();
+        $service = ServiceFactory::new()->withoutPersisting()->createOne()->object();
 
         static::createClient()->request('POST', self::API_ENDPOINT, [
             'headers' => [
