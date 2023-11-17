@@ -2,10 +2,12 @@
 
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use App\Factory\ServiceFactory;
+use App\Tests\ImprovedApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class ServiceTest extends ApiTestCase
+class ServiceTest extends ImprovedApiTestCase
 {
     use ResetDatabase, Factories;
 
@@ -21,6 +23,8 @@ class ServiceTest extends ApiTestCase
 
     public function testServiceGetCollection() {
 
+        ServiceFactory::createMany(10);
+
         $response = static::createClient()->request('GET', self::API_ENDPOINT);
 
         $this->assertResponseIsSuccessful();
@@ -29,7 +33,13 @@ class ServiceTest extends ApiTestCase
     }
 
     public function testServiceGet() {
-        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/1')->toArray();
+        $service = ServiceFactory::createOne();
+
+        $response = static::createClient()->request('GET', self::API_ENDPOINT.'/'.$service->getId(),[
+            'headers' => [
+                'accept' => 'application/json'
+            ]
+        ])->toArray();
 
         $this->assertResponseIsSuccessful();
 
@@ -40,20 +50,38 @@ class ServiceTest extends ApiTestCase
     }
     
     public function testServiceDelete() {
-        static::createClient()->request('DELETE', self::API_ENDPOINT.'/1');
+        $service = ServiceFactory::createOne();
+
+        static::createClient()->request('DELETE', self::API_ENDPOINT.'/'.$service->getId());
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testServiceUpdate() {
-        static::createClient()->request('PUT', self::API_ENDPOINT.'/1', []);
+        $service = ServiceFactory::createOne();
+        $service2 = ServiceFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('PATCH', self::API_ENDPOINT.'/'.$service->getId(), [
+            'headers' =>[
+                'Content-Type' => 'application/merge-patch+json'
+            ],
+            'body' => json_encode($this->getRequestBody(self::SERVICE_DATA, $service2))
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
 
     public function testServiceCreate() {
-        static::createClient()->request('POST', self::API_ENDPOINT.'/1', []);
+        $service = ServiceFactory::new()->withoutPersisting()->createOne();
+
+        static::createClient()->request('POST', self::API_ENDPOINT, [
+            'headers' => [
+                'Content-Type' => 'application/json'
+            ],
+            'body'  => json_encode($this->getRequestBody(self::SERVICE_DATA, $service))
+        ]);
 
         $this->assertResponseIsSuccessful();
     }
+
 }
