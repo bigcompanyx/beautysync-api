@@ -49,6 +49,8 @@ hooks:
         curl -fs https://get.symfony.com/cloud/configurator | bash
         
         NODE_VERSION=18 symfony-build
+        cd $PLATFORM_APP_DIR
+        php bin/console lexik:jwt:generate-keypair
 
     deploy: |
         set -x -e
@@ -58,7 +60,6 @@ hooks:
     post_deploy: |
         set -e
         cd $PLATFORM_APP_DIR
-        php bin/console lexik:jwt:generate-keypair
         php bin/console doctrine:fixtures:load --no-interaction
 
 crons:
