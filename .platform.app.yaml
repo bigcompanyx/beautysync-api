@@ -58,7 +58,8 @@ hooks:
     post_deploy: |
         set -e
         cd $PLATFORM_APP_DIR
-        ./bin/console doctrine:fixtures:load --no-interaction
+        php bin/console lexik:jwt:generate-keypair
+        php bin/console doctrine:fixtures:load --no-interaction
 
 crons:
     security-check:
