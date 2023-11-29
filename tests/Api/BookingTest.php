@@ -3,6 +3,7 @@
 namespace App\Tests\Api;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use App\Factory\BookingFactory;
+use App\Factory\ServiceFactory;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
@@ -12,16 +13,25 @@ class BookingTest extends ApiTestCase
 
     const BOOKING_DATA = [
         'id',
-        'dateTimeStart',
         'dateTimeEnd',
+        'dateTimeStart',
         'duration',
         'price',
-        // @todo 'assignee',
-        // @todo 'client'
+        'assignee',
+        'client',
+        'service',
+        'company'
     ];
 
     public function testBookingGetCollection() {
-        BookingFactory ::createMany(10);
+        ServiceFactory::createMany(3);
+
+        BookingFactory::createMany(10, function() {
+            return [
+                'service' => ServiceFactory::randomRange(0, 3),
+            ];
+        });
+
 
         $response = static::createClient()->request('GET', '/api/bookings');
 
@@ -34,17 +44,18 @@ class BookingTest extends ApiTestCase
 
         $booking = BookingFactory::createOne();
 
-        $response = static::createClient()->request('GET', '/api/bookings/'.$booking->getId(), [
-            'headers' => [
-                'accept' => 'application/json'
-            ]
-        ])->toArray();
+        $response = static::createClient()->request('GET', '/api/bookings/'.$booking->getId())->toArray();
 
         $this->assertResponseIsSuccessful();
 
-        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
-        $this->assertSame(self::BOOKING_DATA, array_keys($response));
+
+        $bookingData = self::BOOKING_DATA;
+        array_walk($bookingData, function($key) use($response){
+            $this->assertArrayHasKey($key, $response);
+
+        });
 
         // @todo $this->assertSame(UsersTest::USER_DATA, array_keys($response['assignee']));
 
