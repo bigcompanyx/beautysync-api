@@ -11,7 +11,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['booking:read']]
+    normalizationContext: ['groups' => ['booking:read']],
+    denormalizationContext: ['groups' => ['booking:write']]
 )]
 class Booking
 {
@@ -22,19 +23,19 @@ class Booking
     private ?int $id = null;
 
     #[ORM\Column]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private ?\DateTimeImmutable $dateTimeStart = null;
 
     #[ORM\Column]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private ?\DateTimeImmutable $dateTimeEnd = null;
 
     #[ORM\Column]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private ?int $duration = null;
 
     #[ORM\Column]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private ?int $price = null;
 
     #[ORM\ManyToMany(targetEntity: Service::class)]
@@ -43,17 +44,17 @@ class Booking
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private ?User $assignee = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private ?Client $client = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private ?Company $company = null;
 
     public function __construct()
