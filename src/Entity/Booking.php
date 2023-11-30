@@ -7,41 +7,53 @@ use App\Repository\BookingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
-#[ApiResource()]
+#[ApiResource(
+    normalizationContext: ['groups' => ['booking:read']]
+)]
 class Booking
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['booking:read'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['booking:read'])]
     private ?\DateTimeImmutable $dateTimeStart = null;
 
     #[ORM\Column]
+    #[Groups(['booking:read'])]
     private ?\DateTimeImmutable $dateTimeEnd = null;
 
     #[ORM\Column]
+    #[Groups(['booking:read'])]
     private ?int $duration = null;
 
     #[ORM\Column]
+    #[Groups(['booking:read'])]
     private ?int $price = null;
 
     #[ORM\ManyToMany(targetEntity: Service::class)]
+    #[Groups(['booking:read'])]
     private Collection $services;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['booking:read'])]
     private ?User $assignee = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['booking:read'])]
     private ?Client $client = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['booking:read'])]
     private ?Company $company = null;
 
     public function __construct()
