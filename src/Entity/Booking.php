@@ -39,7 +39,7 @@ class Booking
     private ?int $price = null;
 
     #[ORM\ManyToMany(targetEntity: Service::class)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'booking:write'])]
     private Collection $services;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
