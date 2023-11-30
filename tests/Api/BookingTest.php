@@ -19,26 +19,9 @@ class BookingTest extends ApiTestCase
         'price',
         'assignee',
         'client',
-        'service',
+        'services',
         'company'
     ];
-
-    public function testBookingGetCollection() {
-        ServiceFactory::createMany(3);
-
-        BookingFactory::createMany(10, function() {
-            return [
-                'service' => ServiceFactory::randomRange(0, 3),
-            ];
-        });
-
-
-        $response = static::createClient()->request('GET', '/api/bookings');
-
-        $this->assertResponseIsSuccessful();
-
-        $this->assertCount(10, $response->toArray()['hydra:member']);
-    }
 
     public function testBookingGet() {
 
@@ -57,11 +40,53 @@ class BookingTest extends ApiTestCase
 
         });
 
-        // @todo $this->assertSame(UsersTest::USER_DATA, array_keys($response['assignee']));
+        $serviceDataKeys = ServiceTest::SERVICE_DATA;
+        $serviceData = array_shift($response['services']);
+        array_walk($serviceDataKeys, function($key) use($serviceData){
+            $this->assertArrayHasKey($key, $serviceData);
 
-        // @todo $this->assertSame(ClientTest::CLIENT_DATA, array_keys($response['client']));
+        });
+
+        $serviceDataKeys = UsersTest::USER_DATA;
+
+        unset($serviceDataKeys[array_search('roles', $serviceDataKeys)]);
+        unset($serviceDataKeys[array_search('password', $serviceDataKeys)]);
+        unset($serviceDataKeys[array_search('userIdentifier', $serviceDataKeys)]);
+
+        $serviceData = $response['assignee'];
+        array_walk($serviceDataKeys, function($key) use($serviceData){
+            $this->assertArrayHasKey($key, $serviceData);
+
+        });
+
+
+        $clientDataKeys = ClientTest::CLIENT_DATA;
+        $clientData = $response['client'];
+        array_walk($clientDataKeys, function($key) use($clientData){
+            $this->assertArrayHasKey($key, $clientData);
+
+        });
 
     }
+
+    public function testBookingGetCollection() {
+        ServiceFactory::createMany(3);
+
+        BookingFactory::createMany(10, function() {
+            return [
+                'services' => ServiceFactory::randomRange(0, 3),
+            ];
+        });
+
+
+        $response = static::createClient()->request('GET', '/api/bookings');
+
+        $this->assertResponseIsSuccessful();
+
+        $this->assertCount(10, $response->toArray()['hydra:member']);
+    }
+
+
     
     public function testBookingDelete() {
         $booking = BookingFactory::createOne();
