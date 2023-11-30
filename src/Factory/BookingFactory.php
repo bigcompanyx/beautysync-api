@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Booking;
 use App\Repository\BookingRepository;
+use Zenstruck\Foundry\LazyValue;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -46,11 +47,17 @@ final class BookingFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
+        ServiceFactory::createMany(3);
+
         return [
             'dateTimeEnd' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'dateTimeStart' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'duration' => self::faker()->randomNumber(),
             'price' => self::faker()->randomNumber(),
+            'assignee' => LazyValue::new(fn()=> UserFactory::createOne()),
+            'client' => LazyValue::new(fn()=> ClientFactory::createOne()),
+            'company' => LazyValue::new(fn()=> CompanyFactory::createOne()),
+            'services'=> LazyValue::new(fn()=> ServiceFactory::randomRange(1, 3))
         ];
     }
 
