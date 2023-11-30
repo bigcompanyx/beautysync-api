@@ -47,8 +47,6 @@ final class BookingFactory extends ModelFactory
      */
     protected function getDefaults(): array
     {
-        ServiceFactory::createMany(3);
-
         return [
             'dateTimeEnd' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'dateTimeStart' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
@@ -57,7 +55,7 @@ final class BookingFactory extends ModelFactory
             'assignee' => LazyValue::new(fn()=> UserFactory::createOne()),
             'client' => LazyValue::new(fn()=> ClientFactory::createOne()),
             'company' => LazyValue::new(fn()=> CompanyFactory::createOne()),
-            'services'=> LazyValue::new(fn()=> ServiceFactory::randomRange(1, 3))
+            'services'=> LazyValue::new(fn()=> ServiceFactory::createMany(3))
         ];
     }
 
