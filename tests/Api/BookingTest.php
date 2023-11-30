@@ -1,13 +1,13 @@
 <?php 
 
 namespace App\Tests\Api;
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+
 use App\Factory\BookingFactory;
-use App\Factory\ServiceFactory;
+use App\Tests\ImprovedApiTestCase;
 use Zenstruck\Foundry\Test\Factories;
 use Zenstruck\Foundry\Test\ResetDatabase;
 
-class BookingTest extends ApiTestCase
+class BookingTest extends ImprovedApiTestCase
 {
     use ResetDatabase, Factories;
 
@@ -23,6 +23,29 @@ class BookingTest extends ApiTestCase
         'company'
     ];
 
+    public function testBookingCreate() {
+
+        $booking = BookingFactory::new()->withoutPersisting()->createOne();
+
+        $response = static::createClient()->request(
+            'POST', 
+            '/api/bookings', 
+            [
+                'headers' => [
+                    'Content-Type' => 'application/json'
+                ],
+                'body' => json_encode($this->getRequestBody(self::BOOKING_DATA, $booking->object()))
+            ]
+
+        )->toArray();
+
+        $this->assertResponseIsSuccessful();
+       
+        $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
+
+        $this->assertArrayHasKeys(self::BOOKING_DATA, $response);
+    }
+
     public function testBookingGet() {
 
         $booking = BookingFactory::createOne();
@@ -33,51 +56,29 @@ class BookingTest extends ApiTestCase
 
         $this->assertResponseHeaderSame('content-type', 'application/ld+json; charset=utf-8');
 
+        $this->assertArrayHasKeys(self::BOOKING_DATA, $response);
 
-        $bookingData = self::BOOKING_DATA;
-        array_walk($bookingData, function($key) use($response){
-            $this->assertArrayHasKey($key, $response);
-
-        });
-
-        $serviceDataKeys = ServiceTest::SERVICE_DATA;
-        $serviceData = array_shift($response['services']);
-        array_walk($serviceDataKeys, function($key) use($serviceData){
-            $this->assertArrayHasKey($key, $serviceData);
-
-        });
-
-        $serviceDataKeys = UsersTest::USER_DATA;
-
-        unset($serviceDataKeys[array_search('roles', $serviceDataKeys)]);
-        unset($serviceDataKeys[array_search('password', $serviceDataKeys)]);
-        unset($serviceDataKeys[array_search('userIdentifier', $serviceDataKeys)]);
-
-        $serviceData = $response['assignee'];
-        array_walk($serviceDataKeys, function($key) use($serviceData){
-            $this->assertArrayHasKey($key, $serviceData);
-
-        });
+        $this->assertArrayHasKeys(ServiceTest::SERVICE_DATA, array_shift($response['services']));
 
 
-        $clientDataKeys = ClientTest::CLIENT_DATA;
-        $clientData = $response['client'];
-        array_walk($clientDataKeys, function($key) use($clientData){
-            $this->assertArrayHasKey($key, $clientData);
+        $this->assertArrayHasKeys(function(){
+            $userExpectedData = UsersTest::USER_DATA;
 
-        });
+            $propsToExclude = ['roles', 'password', 'userIdentifier'];
 
+            array_walk($propsToExclude, function($prop) use(&$userExpectedData){
+                unset($userExpectedData[array_search($prop, $userExpectedData)]);
+            });
+
+            return $userExpectedData;
+
+        }, $response['assignee']);
+
+        $this->assertArrayHasKeys(ClientTest::CLIENT_DATA, $response['client']);
     }
 
     public function testBookingGetCollection() {
-        ServiceFactory::createMany(3);
-
-        BookingFactory::createMany(10, function() {
-            return [
-                'services' => ServiceFactory::randomRange(0, 3),
-            ];
-        });
-
+        BookingFactory::createMany(10);
 
         $response = static::createClient()->request('GET', '/api/bookings');
 
@@ -86,7 +87,21 @@ class BookingTest extends ApiTestCase
         $this->assertCount(10, $response->toArray()['hydra:member']);
     }
 
+    public function testBookingUpdate() {
+        $booking = BookingFactory::new()->createOne();
 
+        $newBooking = BookingFactory::new()->withoutPersisting()->createOne();
+
+        $response = static::createClient()->request('PATCH', '/api/bookings/'. $booking->getId(), [
+            'headers' => [
+                'Content-Type' => 'application/merge-patch+json'
+            ],
+            'body' => json_encode($this->getRequestBody(BookingTest::BOOKING_DATA, $newBooking->object()))
+        ])->toArray();
+
+        $this->assertResponseIsSuccessful();
+
+    }
     
     public function testBookingDelete() {
         $booking = BookingFactory::createOne();
@@ -96,53 +111,4 @@ class BookingTest extends ApiTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testBookingUpdate() {
-        $booking = BookingFactory::createOne();
-        $faker = BookingFactory::faker();
-
-        static::createClient()->request('PUT', '/api/bookings/'. $booking->getId(), [
-            'headers' => [
-                'accept' => 'application/json',
-                'Content-Type' => 'application/json'
-            ],
-            'body' => json_encode([
-                'dateTimeEnd' => \DateTimeImmutable::createFromMutable($faker->dateTime())->format('Y-m-d H:i:s'),
-                'dateTimeStart' => \DateTimeImmutable::createFromMutable($faker->dateTime())->format('Y-m-d H:i:s'),
-                'duration' => $faker->randomNumber(),
-                'price' => $faker->randomNumber(),
-            ])
-        ]);
-
-        $this->assertResponseIsSuccessful();
-    }
-
-    public function testBookingCreate() {
-
-        $faker = BookingFactory::faker();
-
-        $response = static::createClient()->request(
-            'POST', 
-            '/api/bookings', 
-            [
-                'headers' => [
-                    'accept' => 'application/json',
-                    'Content-Type' => 'application/json'
-                ],
-                'body' => json_encode([
-                    'dateTimeEnd' => \DateTimeImmutable::createFromMutable($faker->dateTime())->format('Y-m-d H:i:s'),
-                    'dateTimeStart' => \DateTimeImmutable::createFromMutable($faker->dateTime())->format('Y-m-d H:i:s'),
-                    'duration' => $faker->randomNumber(),
-                    'price' => $faker->randomNumber(),
-
-                ])
-            ]
-
-        )->toArray();
-
-        $this->assertResponseIsSuccessful();
-
-        $this->assertResponseHeaderSame('content-type', 'application/json; charset=utf-8');
-
-        $this->assertSame(self::BOOKING_DATA, array_keys($response));
-    }
 }
